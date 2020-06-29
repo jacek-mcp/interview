@@ -126,12 +126,11 @@ public class DefaultEventManagerTest
         eventManager.publishEvent(new SubEvent(this));
 
         assertTrue(subEventListenerMock.isCalled());
-        assertFalse(simpleEventListenerMock.isCalled());
+        assertTrue(simpleEventListenerMock.isCalled());
 
         eventManager.publishEvent(new SimpleEvent(this));
-
-        assertTrue(subEventListenerMock.isCalled());
-        assertTrue(simpleEventListenerMock.isCalled());
+        
+        assertEquals(2, simpleEventListenerMock.count);
     }
 
     /**

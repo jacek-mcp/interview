@@ -35,6 +35,11 @@ public class DefaultEventManager implements EventManager
     {
         Collection allListeners = (Collection) listenersByClass.get(eventClass);
 
+        while(eventClass.getSuperclass() != Object.class && allListeners != null){
+            allListeners.addAll( (Collection) listenersByClass.get(eventClass.getSuperclass()));
+            eventClass = eventClass.getSuperclass();
+        }
+
         Collection specialListeners = (Collection) listeners.values().stream().filter(l -> {
             return ((InterviewEventListener) l).getHandledEventClasses().length == 0;
         }).collect(Collectors.toList());
