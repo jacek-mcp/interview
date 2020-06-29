@@ -5,6 +5,7 @@ import com.strands.interviews.eventsystem.InterviewEvent;
 import com.strands.interviews.eventsystem.InterviewEventListener;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Manages the firing and receiving of events.
@@ -32,7 +33,18 @@ public class DefaultEventManager implements EventManager
 
     private Collection calculateListeners(Class eventClass)
     {
-        return (Collection) listenersByClass.get(eventClass);
+        Collection allListeners = (Collection) listenersByClass.get(eventClass);
+
+        Collection specialListeners = (Collection) listeners.values().stream().filter(l -> {
+            return ((InterviewEventListener) l).getHandledEventClasses().length == 0;
+        }).collect(Collectors.toList());
+
+        if(allListeners != null)
+             allListeners.addAll(specialListeners);
+        else if(specialListeners != null)
+            return specialListeners;
+
+        return allListeners;
     }
 
     public void registerListener(String listenerKey, InterviewEventListener listener)
